@@ -14,39 +14,55 @@ const ON = 1
 const Calculator = () => {
   let powerState = OFF
   let digits = []
+  let stringValue = ''
+  let currentValue = 0
   let operator = ''
-  let memoryKey = ''
+  let memory = 0
   let userDisplay = ''
+
+  function updateDisplay(text = '0') {
+    display.innerText = text
+  }
+
   return {
     save: function(digit) {
       digits = [...digits, digit]
-      this.updateDisplay(this.getValue())
+      stringValue = digits.reduce((acc, digit) => acc + digit, '')
+      currentValue = Number(stringValue)
+      console.log(currentValue)
+      updateDisplay(stringValue)
     },
-    getValue: function() {
-      return digits.reduce((acc, digit) => acc + digit, '')
+    getCurrentValue: () => currentValue,
+    getStringValue: () => stringValue,
+    setValue: function(value) {
+      if (typeof value === 'number') {
+        currentValue = value
+        stringValue = '' + value
+        digits = []
+        updateDisplay(stringValue)
+      } else {
+        console.error('setValue: Invalid parameter.')
+      }
     },
     clearValue: function() {
       digits = []
-      this.updateDisplay('')
+      updateDisplay('')
     },
-    clearStore: function() {
+    clearAll: function() {
       digits = []
       operator = ''
-      memoryKey = ''
+      memory = 0
       userDisplay = ''
-      this.updateDisplay()
-    },
-    updateDisplay: function(text = '0') {
-      display.innerText = text
+      updateDisplay()
     },
     powerOff: function() {
       powerState = OFF
-      this.clearStore()
-      this.updateDisplay('')
+      this.clearAll()
+      updateDisplay('')
     },
     powerOn: function() {
       powerState = ON
-      this.clearStore()
+      this.clearAll()
     },
     isPoweredUp: () => powerState === ON,
   }
@@ -58,19 +74,31 @@ let calc = Calculator()
 function handleDigit(e) {
   if (!calc.isPoweredUp()) return
   const digit = e.target.innerText
+
+  // prevent multiple decimal points
+  const currentInput = calc.getStringValue()
+  if (currentInput.includes('.') && digit === '.') return
   calc.save(digit)
 }
 
 function handleOperator(e) {
   if (!calc.isPoweredUp()) return
   const operator = e.target.innerText
+  let value
   switch (operator) {
     case 'C':
       calc.clearValue()
       break
     case 'AC':
-      calc.clearStore()
+      calc.clearAll()
       break
+    case '√':
+      value = calc.getCurrentValue()
+      calc.setValue(Math.sqrt(value))
+      break
+    case '±':
+      value = calc.getCurrentValue()
+      calc.setValue(value * -1)
     default:
       console.log('What operator was that?', operator)
   }
