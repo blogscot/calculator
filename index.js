@@ -7,8 +7,12 @@ const operators = calculator.querySelectorAll('.operator')
 const memoryKeys = calculator.querySelectorAll('.memory')
 const powerKeys = calculator.querySelectorAll('.power')
 
+// Power States
+const OFF = 0
+const ON = 1
+
 const Calculator = () => {
-  let powerState = 'OFF' // 'OFF' | 'ON'
+  let powerState = OFF
   let digits = []
   let operator = ''
   let memoryKey = ''
@@ -16,40 +20,35 @@ const Calculator = () => {
   return {
     save: function(digit) {
       digits = [...digits, digit]
-      this.updateDisplay()
+      this.updateDisplay(this.getValue())
     },
     getValue: function() {
       return digits.reduce((acc, digit) => acc + digit, '')
     },
     clearValue: function() {
-      digits = ['0']
-      this.updateDisplay()
+      digits = []
+      this.updateDisplay('')
     },
     clearStore: function() {
-      this.clearValue()
+      digits = []
       operator = ''
       memoryKey = ''
       userDisplay = ''
       this.updateDisplay()
     },
-    updateDisplay: function() {
-      const text = this.getValue()
-      // console.log('text', text)
+    updateDisplay: function(text = '0') {
       display.innerText = text
     },
     powerOff: function() {
-      powerState = 'OFF'
+      powerState = OFF
       this.clearStore()
-      digits = []
-      this.updateDisplay()
+      this.updateDisplay('')
     },
     powerOn: function() {
-      powerState = 'ON'
+      powerState = ON
       this.clearStore()
-      digits = ['0']
-      this.updateDisplay()
     },
-    isPoweredUp: () => powerState === 'ON',
+    isPoweredUp: () => powerState === ON,
   }
 }
 
@@ -73,7 +72,7 @@ function handleOperator(e) {
       calc.clearStore()
       break
     default:
-      console.log('default', calc.getValue())
+      console.log('What operator was that?', operator)
   }
 }
 
@@ -90,7 +89,7 @@ function handlePowerKey(e) {
         calc.powerOn()
       }
       break
-    case 'OFF':
+    case OFF:
     default:
       if (calc.isPoweredUp()) {
         calc.powerOff()
