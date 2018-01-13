@@ -15,15 +15,41 @@ const ON = 1
 const Calculator = () => {
   let powerState = OFF
   let digits = []
-  let stringValue = ''
-  let currentValue = 0
-  let operator = ''
+  let currentValue = null // type Number
+  let accumulator = null // type Number
+  let operator = null // type String
   let memory = 0
   let userDisplay = ''
 
-  function updateDisplay(text = '0') {
-    displayTop.innerText = ''
+  function displayValue(text = '0') {
     displayBottom.innerText = text
+  }
+
+  function displayOperator(op = '') {
+    displayTop.innerText = op
+  }
+
+  function clearDisplay() {
+    displayTop.innerText = ''
+    displayBottom.innerText = ''
+  }
+
+  function evaluate(acc, current, operator) {
+    if (acc && current && operator) {
+      switch (operator) {
+        case '+':
+          return acc + current
+        case '×':
+          return acc * current
+        case '-':
+          return acc - current
+        case '÷':
+          return acc / current
+        default:
+          throw new Error('evaluate: Invalid parameter')
+      }
+    }
+    return currentValue || 0
   }
 
   return {
@@ -31,34 +57,55 @@ const Calculator = () => {
       digits = [...digits, digit]
       const stringValue = Number(digits.reduce((acc, digit) => acc + digit, ''))
       currentValue = Number(stringValue)
-      updateDisplay(stringValue)
+      displayValue(stringValue)
     },
-    getValue: () => currentValue,
+    getValue: () => currentValue || 0,
     setValue: function(value) {
       if (typeof value === 'number') {
         currentValue = value
         digits = []
-        updateDisplay(currentValue)
+        displayValue(currentValue)
       } else {
         console.error('setValue: Invalid parameter.')
       }
     },
+    setOperator: function(op) {
+      // ignore operators until value is set
+      if (!currentValue || typeof op !== 'string') return
+
+      if (!operator) {
+        // save current state
+        operator = op
+        accumulator = currentValue
+      } else {
+        // Use old operator
+        accumulator = evaluate(accumulator, currentValue, operator)
+        operator = op
+      }
+      digits = []
+      displayOperator(op)
+    },
+    showResult() {
+      accumulator = evaluate(accumulator, currentValue, operator)
+      displayOperator()
+      displayValue(String(accumulator))
+    },
     clearValue: function() {
       digits = []
-      updateDisplay('')
+      clearDisplay()
     },
     clearAll: function() {
       digits = []
-      currentValue = 0
-      operator = ''
+      currentValue = null
+      operator = null
       memory = 0
       userDisplay = ''
-      updateDisplay()
+      displayValue()
     },
     powerOff: function() {
       powerState = OFF
       this.clearAll()
-      updateDisplay('')
+      clearDisplay()
     },
     powerOn: function() {
       powerState = ON
@@ -99,6 +146,17 @@ function handleOperator(e) {
     case '±':
       value = calc.getValue()
       calc.setValue(value * -1)
+      break
+    case '+':
+    case '×':
+    case '-':
+    case '÷':
+      calc.setOperator(operator)
+      break
+    case '=':
+      calc.showResult()
+      break
+    case '%':
     default:
       console.log('What operator was that?', operator)
   }
