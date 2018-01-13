@@ -1,7 +1,8 @@
 import './style.scss'
 
 const calculator = document.querySelector('#wrapper')
-const display = calculator.querySelector('#display')
+const displayTop = calculator.querySelector('.display-top')
+const displayBottom = calculator.querySelector('.display-bottom')
 const digits = calculator.querySelectorAll('.digit')
 const operators = calculator.querySelectorAll('.operator')
 const memoryKeys = calculator.querySelectorAll('.memory')
@@ -21,25 +22,23 @@ const Calculator = () => {
   let userDisplay = ''
 
   function updateDisplay(text = '0') {
-    display.innerText = text
+    displayTop.innerText = ''
+    displayBottom.innerText = text
   }
 
   return {
     save: function(digit) {
       digits = [...digits, digit]
-      stringValue = digits.reduce((acc, digit) => acc + digit, '')
+      const stringValue = Number(digits.reduce((acc, digit) => acc + digit, ''))
       currentValue = Number(stringValue)
-      console.log(currentValue)
       updateDisplay(stringValue)
     },
-    getCurrentValue: () => currentValue,
-    getStringValue: () => stringValue,
+    getValue: () => currentValue,
     setValue: function(value) {
       if (typeof value === 'number') {
         currentValue = value
-        stringValue = '' + value
         digits = []
-        updateDisplay(stringValue)
+        updateDisplay(currentValue)
       } else {
         console.error('setValue: Invalid parameter.')
       }
@@ -50,6 +49,7 @@ const Calculator = () => {
     },
     clearAll: function() {
       digits = []
+      currentValue = 0
       operator = ''
       memory = 0
       userDisplay = ''
@@ -76,7 +76,7 @@ function handleDigit(e) {
   const digit = e.target.innerText
 
   // prevent multiple decimal points
-  const currentInput = calc.getStringValue()
+  const currentInput = String(calc.getValue())
   if (currentInput.includes('.') && digit === '.') return
   calc.save(digit)
 }
@@ -93,11 +93,11 @@ function handleOperator(e) {
       calc.clearAll()
       break
     case '√':
-      value = calc.getCurrentValue()
+      value = calc.getValue()
       calc.setValue(Math.sqrt(value))
       break
     case '±':
-      value = calc.getCurrentValue()
+      value = calc.getValue()
       calc.setValue(value * -1)
     default:
       console.log('What operator was that?', operator)

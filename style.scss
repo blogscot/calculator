@@ -1,20 +1,44 @@
 body {
   display: flex;
+  flex-direction: column;
   height: 100vh;
   justify-content: center;
   align-items: center;
 }
 
 #wrapper {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(8, 1fr);
-  grid-gap: 6px;
-  width: 240px;
   background-color: blanchedalmond;
+  width: 240px;
   padding: 15px 15px 5px 15px;
   border-radius: 8px;
   box-shadow: 1px 2px 5px grey;
+}
+
+.display {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  width: 240px;
+  min-height: 60px;
+  overflow: auto;
+  font-size: 26px;
+  background-color: white;
+  margin-bottom: 10px;
+  padding: 2px;
+  box-shadow: 0px 2px 5px gray inset;
+}
+
+#keyboard {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  grid-gap: 6px;
+}
+
+%top-row {
+  height: 20px;
+  font-size: 18px;
+  position: relative;
+  top: 5px;
 }
 
 .key {
@@ -40,15 +64,17 @@ body {
     justify-content: center;
     align-items: center;
     grid-column: 5;
-    grid-row: 7 / span 2;
+    grid-row: 5 / span 2;
   }
 
   &.sqrt {
     grid-column: 4;
+    @extend %top-row;
   }
 
   &.off {
     grid-column: 5;
+    @extend %top-row;
   }
 
   &:active {
@@ -56,17 +82,18 @@ body {
   }
 }
 
-#display {
+.display-top {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end;
-  overflow: auto;
-  font-size: 26px;
-  background-color: white;
-  margin-bottom: 10px;
   grid-column: 1 / -1;
-  grid-row: 1 / 3;
-  box-shadow: 0px 2px 5px gray inset;
+  grid-row: 1;
+}
+
+.display-bottom {
+  display: flex;
+  justify-content: flex-end;
+  grid-column: 1 / -1;
+  grid-row: 2;
 }
 
 #power-on {
