@@ -53,7 +53,7 @@ const Calculator = () => {
   }
 
   function evaluate(acc: number, current: number, operator: string): number {
-    if (acc && current && operator) {
+    if (acc !== null && current !== null && operator) {
       switch (operator) {
         case '+':
           return acc + current
@@ -101,7 +101,6 @@ const Calculator = () => {
     },
     showResult: function() {
       const result = evaluate(accumulator, currentValue, operator)
-      console.log(result)
       // User can be evaluating an expression or a constant
       if (result !== null) {
         displayOperator()
