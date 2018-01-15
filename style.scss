@@ -1,4 +1,6 @@
 $width: 240px;
+$poweredOff: #a7a4a4;
+$poweredOn: #d1cdcd;
 
 body {
   display: flex;
@@ -17,17 +19,26 @@ body {
   box-shadow: 1px 2px 5px grey;
 }
 
+.powered {
+  background-color: $poweredOn !important;
+  transition: all 0.2s;
+}
+
 .display {
   display: grid;
   grid-template-rows: repeat(2, 1fr);
   width: $width;
   min-height: 67px;
   font-size: 24px;
-  background-color: white;
+  background-color: $poweredOff;
   margin-bottom: 10px;
   padding: 1px;
   box-shadow: 0px 2px 5px gray inset;
   text-shadow: 0px 1px 2px grey;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 0.2s;
 }
 
 .extended_number {
