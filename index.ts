@@ -1,6 +1,7 @@
 import './style.scss'
 
 const calculator: HTMLElement = document.querySelector('#wrapper')
+const display: HTMLElement = calculator.querySelector('.display')
 const displayTop: HTMLElement = calculator.querySelector('.display-top')
 const displayBottom: HTMLElement = calculator.querySelector('.display-bottom')
 const digits = calculator.querySelectorAll('.digit')
@@ -23,6 +24,7 @@ const Calculator = () => {
   let accumulator: number = null
   let operator: string = null
   let memory = 0
+  let percentPressed = false
 
   function displayValue(value: number = 0) {
     const length = String(value).length
@@ -54,6 +56,10 @@ const Calculator = () => {
 
   function evaluate(acc: number, current: number, operator: string): number {
     if (acc !== null && current !== null && operator) {
+      if (percentPressed) {
+        percentPressed = false
+        current /= 100
+      }
       switch (operator) {
         case '+':
           return acc + current
@@ -99,6 +105,10 @@ const Calculator = () => {
       digits = []
       displayOperator(op)
     },
+    setPercentage: operator => {
+      displayOperator(operator)
+      percentPressed = true
+    },
     showResult: function() {
       const result = evaluate(accumulator, currentValue, operator)
       // User can be evaluating an expression or a constant
@@ -124,11 +134,13 @@ const Calculator = () => {
       displayValue()
     },
     powerOff: function() {
+      display.classList.remove('powered')
       powerState = PowerState.OFF
       this.clearAll()
       clearDisplay()
     },
     powerOn: function() {
+      display.classList.add('powered')
       powerState = PowerState.ON
       this.clearAll()
     },
@@ -178,6 +190,8 @@ function handleOperator(e) {
       calc.showResult()
       break
     case '%':
+      calc.setPercentage(operator)
+      break
     default:
       console.log('What operator was that?', operator)
   }

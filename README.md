@@ -14,7 +14,6 @@ yarn run start
 
 ## TODO
 
-* Percent Key
 * Memory Keys
 
 It would be nice to display small memory icons in the upper display when these keys are active!
