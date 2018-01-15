@@ -1,40 +1,58 @@
 import './style.scss'
 
-const calculator = document.querySelector('#wrapper')
-const displayTop = calculator.querySelector('.display-top')
-const displayBottom = calculator.querySelector('.display-bottom')
+const calculator: HTMLElement = document.querySelector('#wrapper')
+const displayTop: HTMLElement = calculator.querySelector('.display-top')
+const displayBottom: HTMLElement = calculator.querySelector('.display-bottom')
 const digits = calculator.querySelectorAll('.digit')
 const operators = calculator.querySelectorAll('.operator')
 const memoryKeys = calculator.querySelectorAll('.memory')
 const powerKeys = calculator.querySelectorAll('.power')
 
 // Power States
-const OFF = 0
-const ON = 1
+enum PowerState {
+  OFF = 0,
+  ON = 1,
+}
+
+const screen_width = 23
 
 const Calculator = () => {
-  let powerState = OFF
+  let powerState = PowerState.OFF
   let digits = []
-  let currentValue = null // type Number
-  let accumulator = null // type Number
-  let operator = null // type String
+  let currentValue: number = null
+  let accumulator: number = null
+  let operator: string = null
   let memory = 0
-  let userDisplay = ''
 
-  function displayValue(text = '0') {
-    displayBottom.innerText = text
+  function displayValue(value: number = 0) {
+    const length = String(value).length
+    // Truncate very long numbers
+    if (length > screen_width) return
+
+    // For long numbers scale down the font-size
+    if (length >= 20) {
+      displayBottom.classList.add('extended_number')
+    } else {
+      displayBottom.classList.remove('extended_number')
+    }
+
+    displayBottom.innerText = String(value)
   }
 
   function displayOperator(op = '') {
     displayTop.innerText = op
   }
 
-  function clearDisplay() {
+  function clearOperator() {
     displayTop.innerText = ''
+  }
+
+  function clearDisplay() {
+    clearOperator()
     displayBottom.innerText = ''
   }
 
-  function evaluate(acc, current, operator) {
+  function evaluate(acc: number, current: number, operator: string): number {
     if (acc && current && operator) {
       switch (operator) {
         case '+':
@@ -49,27 +67,23 @@ const Calculator = () => {
           throw new Error('evaluate: Invalid parameter')
       }
     }
-    return currentValue || 0
+    return null
   }
 
   return {
-    save: function(digit) {
+    save: function(digit: string) {
       digits = [...digits, digit]
-      const stringValue = Number(digits.reduce((acc, digit) => acc + digit, ''))
+      const stringValue = digits.reduce((acc, digit) => acc + digit, '')
       currentValue = Number(stringValue)
       displayValue(stringValue)
     },
-    getValue: () => currentValue || 0,
-    setValue: function(value) {
-      if (typeof value === 'number') {
-        currentValue = value
-        digits = []
-        displayValue(currentValue)
-      } else {
-        console.error('setValue: Invalid parameter.')
-      }
+    getValue: (): number => currentValue || 0,
+    setValue: function(value: number) {
+      currentValue = value
+      digits = []
+      displayValue(currentValue)
     },
-    setOperator: function(op) {
+    setOperator: function(op: string) {
       // ignore operators until value is set
       if (!currentValue || typeof op !== 'string') return
 
@@ -85,10 +99,18 @@ const Calculator = () => {
       digits = []
       displayOperator(op)
     },
-    showResult() {
-      accumulator = evaluate(accumulator, currentValue, operator)
-      displayOperator()
-      displayValue(String(accumulator))
+    showResult: function() {
+      const result = evaluate(accumulator, currentValue, operator)
+      console.log(result)
+      // User can be evaluating an expression or a constant
+      if (result !== null) {
+        displayOperator()
+        operator = null
+        displayValue(result)
+        currentValue = result
+      } else {
+        displayValue(currentValue)
+      }
     },
     clearValue: function() {
       digits = []
@@ -99,19 +121,19 @@ const Calculator = () => {
       currentValue = null
       operator = null
       memory = 0
-      userDisplay = ''
+      clearOperator()
       displayValue()
     },
     powerOff: function() {
-      powerState = OFF
+      powerState = PowerState.OFF
       this.clearAll()
       clearDisplay()
     },
     powerOn: function() {
-      powerState = ON
+      powerState = PowerState.ON
       this.clearAll()
     },
-    isPoweredUp: () => powerState === ON,
+    isPoweredUp: () => powerState === PowerState.ON,
   }
 }
 
@@ -175,7 +197,7 @@ function handlePowerKey(e) {
         calc.powerOn()
       }
       break
-    case OFF:
+    case 'OFF':
     default:
       if (calc.isPoweredUp()) {
         calc.powerOff()
