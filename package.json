@@ -10,7 +10,8 @@
     "typescript": "^2.6.2"
   },
   "scripts": {
-    "start": "parcel index.html"
+    "start": "parcel index.html",
+    "build": "parcel build index.html -d docs --public-url ./"
   },
   "dependencies": {
     "node-sass": "^4.7.2"
