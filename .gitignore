@@ -1,6 +1,5 @@
 .cache/
 node_modules/
-dist/
 resources/
 Calculator Test/
 
