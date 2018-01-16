@@ -1,6 +1,6 @@
 # Calculator App
 
-This project will implement a basic calculator application, which I'll eventually submit to Free Code Camp.
+This project implements a basic calculator application, which I'll eventually submit to Free Code Camp.
 
 Technologies used for development: TypeScript, CSS GRID, Parcel bundler.
 
@@ -11,11 +11,6 @@ To run the development enviroment enter the following command:
 ```zsh
 yarn run start
 ```
-
-## TODO
-
-1. Fix dividing a decimal fraction by a decimal fraction (.2 / 0.2)
-1. Fix adding decimal point to evaluated values (.2 / 0.2 then press '.')
 
 ## Tips and Tricks
 

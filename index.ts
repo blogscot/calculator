@@ -18,12 +18,14 @@ enum PowerState {
   ON = 1,
 }
 
+type ArithmeticOperator = '+' | '×' | '-' | '÷'
+
 const Calculator = () => {
   let powerState = PowerState.OFF
   let digits = []
   let currentValue: number = null
   let accumulator: number = null
-  let operator: string = null
+  let operator: ArithmeticOperator = null
   let memory = 0
   let percentPressed = false
 
@@ -44,12 +46,12 @@ const Calculator = () => {
     displayBottom.innerText = String(value)
   }
 
-  function displayOperator(op = '') {
-    activeOperator.innerText = op
+  function showMemoryIcon(flag: boolean = true) {
+    memoryStatus.innerText = flag ? 'M' : ''
   }
 
-  function showMemoryIcon(flag = true) {
-    memoryStatus.innerText = flag ? 'M' : ''
+  function displayOperator(op: string) {
+    activeOperator.innerText = op
   }
 
   function clearOperator() {
@@ -62,12 +64,17 @@ const Calculator = () => {
   }
 
   // Helpers
-  function evaluate(acc: number, current: number, operator: string): number {
+  function evaluate(
+    acc: number,
+    current: number,
+    operator: ArithmeticOperator
+  ): number {
     if (acc !== null && current !== null && operator) {
       if (percentPressed) {
         percentPressed = false
         current /= 100
       }
+      digits = []
       switch (operator) {
         case '+':
           return acc + current
@@ -92,32 +99,38 @@ const Calculator = () => {
       currentValue = Number(stringValue)
       displayValue(stringValue)
     },
+
     getValue: (): number => currentValue || 0,
+
     setValue: function(value: number) {
       currentValue = value
       digits = []
       displayValue(currentValue)
     },
-    setOperator: function(op: string) {
+
+    setOperator: function(op: ArithmeticOperator) {
       // ignore operators until value is set
-      if (!currentValue || typeof op !== 'string') return
+      if (!currentValue) return
 
       if (!operator) {
         // save current state
         operator = op
         accumulator = currentValue
       } else {
-        // Use old operator
+        // Use previous operator
         accumulator = evaluate(accumulator, currentValue, operator)
         operator = op
       }
       digits = []
+      currentValue = 0
       displayOperator(op)
     },
+
     setPercentage: operator => {
       displayOperator(operator)
       percentPressed = true
     },
+
     applyMemoryKey: key => {
       switch (key) {
         case 'MC':
@@ -131,20 +144,23 @@ const Calculator = () => {
         case 'M+':
           showMemoryIcon()
           memory += currentValue
+          digits = []
           break
         case 'M-':
           showMemoryIcon()
           memory -= currentValue
+          digits = []
           break
         default:
           console.log('What memory key was that? ', key)
       }
     },
+
     showResult: function() {
       const result = evaluate(accumulator, currentValue, operator)
       // User can be evaluating an expression or a constant
       if (result !== null) {
-        displayOperator()
+        clearOperator()
         operator = null
         displayValue(result)
         currentValue = result
@@ -152,29 +168,33 @@ const Calculator = () => {
         displayValue(currentValue)
       }
     },
+
     clearValue: function() {
       digits = []
       clearDisplay()
     },
+
     clearAll: function() {
       digits = []
       currentValue = null
       operator = null
       clearOperator()
-      showMemoryIcon(false)
       displayValue()
     },
+
     powerOff: function() {
       display.classList.remove('powered')
       powerState = PowerState.OFF
       this.clearAll()
       clearDisplay()
     },
+
     powerOn: function() {
       display.classList.add('powered')
       powerState = PowerState.ON
       this.clearAll()
     },
+
     isPoweredUp: () => powerState === PowerState.ON,
   }
 }
