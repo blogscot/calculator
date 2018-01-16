@@ -14,9 +14,8 @@ yarn run start
 
 ## TODO
 
-* Memory Keys
-
-It would be nice to display small memory icons in the upper display when these keys are active!
+1. Fix dividing a decimal fraction by a decimal fraction (.2 / 0.2)
+1. Fix adding decimal point to evaluated values (.2 / 0.2 then press '.')
 
 ## Tips and Tricks
 

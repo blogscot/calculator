@@ -2,7 +2,10 @@ import './style.scss'
 
 const calculator: HTMLElement = document.querySelector('#wrapper')
 const display: HTMLElement = calculator.querySelector('.display')
-const displayTop: HTMLElement = calculator.querySelector('.display-top')
+const memoryStatus: HTMLElement = calculator.querySelector('.display-top-left')
+const activeOperator: HTMLElement = calculator.querySelector(
+  '.display-top-right'
+)
 const displayBottom: HTMLElement = calculator.querySelector('.display-bottom')
 const digits = calculator.querySelectorAll('.digit')
 const operators = calculator.querySelectorAll('.operator')
@@ -15,8 +18,6 @@ enum PowerState {
   ON = 1,
 }
 
-const screen_width = 23
-
 const Calculator = () => {
   let powerState = PowerState.OFF
   let digits = []
@@ -26,10 +27,12 @@ const Calculator = () => {
   let memory = 0
   let percentPressed = false
 
+  // Display functions
   function displayValue(value: number = 0) {
+    const max_number_of_digits = 23
     const length = String(value).length
     // Truncate very long numbers
-    if (length > screen_width) return
+    if (length > max_number_of_digits) return
 
     // For long numbers scale down the font-size
     if (length >= 20) {
@@ -42,11 +45,15 @@ const Calculator = () => {
   }
 
   function displayOperator(op = '') {
-    displayTop.innerText = op
+    activeOperator.innerText = op
+  }
+
+  function showMemoryIcon(flag = true) {
+    memoryStatus.innerText = flag ? 'M' : ''
   }
 
   function clearOperator() {
-    displayTop.innerText = ''
+    activeOperator.innerText = ''
   }
 
   function clearDisplay() {
@@ -54,6 +61,7 @@ const Calculator = () => {
     displayBottom.innerText = ''
   }
 
+  // Helpers
   function evaluate(acc: number, current: number, operator: string): number {
     if (acc !== null && current !== null && operator) {
       if (percentPressed) {
@@ -76,6 +84,7 @@ const Calculator = () => {
     return null
   }
 
+  // Public functions
   return {
     save: function(digit: string) {
       digits = [...digits, digit]
@@ -109,6 +118,28 @@ const Calculator = () => {
       displayOperator(operator)
       percentPressed = true
     },
+    applyMemoryKey: key => {
+      switch (key) {
+        case 'MC':
+          memory = 0
+          showMemoryIcon(false)
+          break
+        case 'MR':
+          currentValue = memory
+          displayValue(currentValue)
+          break
+        case 'M+':
+          showMemoryIcon()
+          memory += currentValue
+          break
+        case 'M-':
+          showMemoryIcon()
+          memory -= currentValue
+          break
+        default:
+          console.log('What memory key was that? ', key)
+      }
+    },
     showResult: function() {
       const result = evaluate(accumulator, currentValue, operator)
       // User can be evaluating an expression or a constant
@@ -129,8 +160,8 @@ const Calculator = () => {
       digits = []
       currentValue = null
       operator = null
-      memory = 0
       clearOperator()
+      showMemoryIcon(false)
       displayValue()
     },
     powerOff: function() {
@@ -200,6 +231,7 @@ function handleOperator(e) {
 function handleMemoryKey(e) {
   if (!calc.isPoweredUp()) return
   const key = e.target.innerText
+  calc.applyMemoryKey(key)
 }
 
 function handlePowerKey(e) {
