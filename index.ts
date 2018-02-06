@@ -119,6 +119,7 @@ const Calculator = () => {
       } else {
         // Use previous operator
         accumulator = evaluate(accumulator, currentValue, operator)
+        displayValue(accumulator)
         operator = op
       }
       digits = []
