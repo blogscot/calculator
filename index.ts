@@ -46,6 +46,11 @@ const Calculator = () => {
     displayBottom.innerText = String(value)
   }
 
+  function clearMemory() {
+    memory = 0
+    showMemoryIcon(false)
+  }
+
   function showMemoryIcon(flag: boolean = true) {
     memoryStatus.innerText = flag ? 'M' : ''
   }
@@ -135,8 +140,7 @@ const Calculator = () => {
     applyMemoryKey: key => {
       switch (key) {
         case 'MC':
-          memory = 0
-          showMemoryIcon(false)
+          clearMemory()
           break
         case 'MR':
           currentValue = memory
@@ -175,7 +179,7 @@ const Calculator = () => {
       clearDisplay()
     },
 
-    clearAll: function() {
+    reset: function() {
       digits = []
       currentValue = null
       operator = null
@@ -186,14 +190,15 @@ const Calculator = () => {
     powerOff: function() {
       display.classList.remove('powered')
       powerState = PowerState.OFF
-      this.clearAll()
+      this.reset()
+      clearMemory()
       clearDisplay()
     },
 
     powerOn: function() {
       display.classList.add('powered')
       powerState = PowerState.ON
-      this.clearAll()
+      this.reset()
     },
 
     isPoweredUp: () => powerState === PowerState.ON,
@@ -222,7 +227,7 @@ function handleOperator(e) {
       calc.clearValue()
       break
     case 'AC':
-      calc.clearAll()
+      calc.reset()
       break
     case '√':
       value = calc.getValue()
