@@ -7,11 +7,13 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "cypress": "^1.4.2",
     "typescript": "^2.6.2"
   },
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.html -d docs --public-url ./"
+    "build": "parcel build index.html -d docs --public-url ./",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "node-sass": "^4.7.2"
