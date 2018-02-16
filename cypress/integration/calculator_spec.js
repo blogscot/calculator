@@ -36,18 +36,18 @@ const memoryRecall = () => cy.get('.memory').eq(1)
 const memoryPlus = () => cy.get('.memory').eq(2)
 const memoryMinus = () => cy.get('.memory:last')
 
-describe('My First Test', function() {
-  it('power cycles the calculator', function() {
-    cy.visit('http://localhost:1234')
+describe('Calculator Integration Tests', function() {
+  beforeEach(function() {
+    cy.visit('localhost:1234')
+  })
 
+  it('power cycles the calculator', function() {
     powerOn().click()
     display().contains('0')
     powerOff().click()
   })
 
   it('adds two numbers', function() {
-    cy.visit('http://localhost:1234')
-
     powerOn().click()
     one().click()
     display().contains('1')
@@ -61,8 +61,6 @@ describe('My First Test', function() {
   })
 
   it('multiplies two numbers', function() {
-    cy.visit('http://localhost:1234')
-
     powerOn().click()
     three().click()
     display().contains('3')
