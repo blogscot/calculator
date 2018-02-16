@@ -36,19 +36,24 @@ const memoryRecall = () => cy.get('.memory').eq(1)
 const memoryPlus = () => cy.get('.memory').eq(2)
 const memoryMinus = () => cy.get('.memory:last')
 
-describe('Calculator Integration Tests', function() {
-  beforeEach(function() {
+describe('Calculator Integration Tests', () => {
+  before(() => {
     cy.visit('localhost:1234')
   })
 
-  it('power cycles the calculator', function() {
+  beforeEach(() => {
     powerOn().click()
-    display().contains('0')
+  })
+
+  after(() => {
     powerOff().click()
   })
 
-  it('adds two numbers', function() {
-    powerOn().click()
+  it('power cycles the calculator', () => {
+    display().contains('0')
+  })
+
+  it('adds two numbers', () => {
     one().click()
     display().contains('1')
     add().click()
@@ -57,11 +62,9 @@ describe('Calculator Integration Tests', function() {
     display().contains('1')
     equals().click()
     display().contains('2')
-    powerOff().click()
   })
 
-  it('multiplies two numbers', function() {
-    powerOn().click()
+  it('multiplies two numbers', () => {
     three().click()
     display().contains('3')
     times().click()
@@ -70,11 +73,9 @@ describe('Calculator Integration Tests', function() {
     display().contains('8')
     equals().click()
     display().contains('24')
-    powerOff().click()
   })
 
-  it('memory display is clear after power off', function() {
-    powerOn().click()
+  it('memory display is clear after power off', () => {
     one().click()
     divide().click()
     six().click()
@@ -87,8 +88,7 @@ describe('Calculator Integration Tests', function() {
     display().should('be.empty')
   })
 
-  it('performs a chain of actions', function() {
-    powerOn().click()
+  it('performs a chain of actions', () => {
     one().click()
     zero().click()
     display().contains('10')
@@ -106,6 +106,5 @@ describe('Calculator Integration Tests', function() {
     display().contains('1.5')
     equals().click()
     display().contains('9.5')
-    powerOff().click()
   })
 })
