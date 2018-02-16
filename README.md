@@ -27,3 +27,7 @@ parcel build index.html -d docs --public-url ./
 ```
 
 You can have a look at the deployed calculator [here](https://blogscot.github.io/calculator/).
+
+## Build Status
+
+[![Build Status](https://travis-ci.org/blogscot/calculator.svg?branch=master)](https://travis-ci.org/blogscot/calculator)
