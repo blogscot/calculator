@@ -12,7 +12,8 @@
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html -d docs --public-url ./",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "node-sass": "^4.7.2",
