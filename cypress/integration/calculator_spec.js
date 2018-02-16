@@ -38,7 +38,7 @@ const memoryMinus = () => cy.get('.memory:last')
 
 describe('Calculator Integration Tests', () => {
   before(() => {
-    cy.visit('localhost:1234')
+    cy.visit('https://blogscot.github.io/calculator/')
   })
 
   beforeEach(() => {
