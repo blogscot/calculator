@@ -10,7 +10,9 @@
     "cypress": "2.0.0"
   },
   "scripts": {
-    "start": "parcel index.html",
+    "start": "http-server docs -p 1234 -c-1",
+    "start:ci": "http-server docs -p 1234 -c-1 --silent",
+    "dev": "parcel index.html",
     "build": "parcel build index.html -d docs --public-url ./",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"

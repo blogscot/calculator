@@ -38,7 +38,8 @@ const memoryMinus = () => cy.get('.memory:last')
 
 describe('Calculator Integration Tests', () => {
   before(() => {
-    cy.visit('https://blogscot.github.io/calculator/')
+    // baseUrl is initialised in cypress.json
+    cy.visit('/')
   })
 
   beforeEach(() => {
